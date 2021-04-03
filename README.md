@@ -64,12 +64,10 @@ MavTrade provides a user-friendly platform where UTA students can trade and sell
 **Tab Navigation** (Tab to Screen)
 
 * Home
+* Personal Freed
+* Messages
 * Profile
 * Settings
-* Posts
-* Chat
-
-
 
 **Flow Navigation** (Screen to Screen)
 * Forced Log-in -> Account creation if no log in is available
@@ -78,4 +76,6 @@ MavTrade provides a user-friendly platform where UTA students can trade and sell
 * Settings -> Toggle settings
 
 ## Wireframes
-<img src="https://i.imgur.com/9CrjH1K.jpg" width=800><br>
+<img src="Wireframe.png" width=800><br>
+
+https://www.figma.com/proto/2DwZmrxeP11xzKBXq8clXZ/MavTrade-Wireframes?node-id=1%3A3&scaling=scale-down&page-id=0%3A1
