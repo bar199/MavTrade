@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_selector_settings"
+        android:title="Settings"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_profile"
+        android:icon="@drawable/ic_selector_profile"
+        android:title="Profile"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/ic_selector_home"
+        android:title="Home"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_following"
+        android:icon="@drawable/ic_selector_following"
+        android:title="Following"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_direct"
+        android:icon="@drawable/ic_selector_direct"
+        android:title="Inbox"
+        app:showAsAction="always" />
+
+</menu>

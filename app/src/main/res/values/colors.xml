@@ -7,4 +7,17 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="bottom_nav_bar_top_border">#303030</color>
+    <color name="secondary_text">#BFBFBF</color>
+    <color name="et_border">#353535</color>
+
+    <color name="btn_login">#09BF03</color>
+    <color name="btn_register">#2196F3</color>
+
+    <color name="toast_text">#FFFFFF</color>
+    <color name="toast_background">#D8F44336</color>
+
+    <color name="mav_blue">#0064B3</color>
+    <color name="mav_orange">#F68121</color>
 </resources>
