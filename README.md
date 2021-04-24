@@ -8,6 +8,7 @@ Unit 11: Group Milestone
 1. [Product Spec](#Product-Spec)
 1. [Wireframes](#Wireframes)
 1. [Schema](#Schema)
+1. [Progess Gifs](#Progress Gifs)
 
 ## Overview
 ### Description
@@ -111,3 +112,10 @@ https://www.figma.com/proto/2DwZmrxeP11xzKBXq8clXZ/MavTrade-Wireframes?node-id=1
 - Settings screen
    - (Update/PUT) Update user profile image
    - (Delete) Delete logged in user object
+
+## Progress Gifs
+### Unit 11
+
+<img src='unit11progress.gif' title='Unit 11 Progress' width='' alt='Unit 11 Progress' />
+
+GIF created with [GIPHY](https://giphy.com/).
