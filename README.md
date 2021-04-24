@@ -1,4 +1,4 @@
-Unit 8: Group Milestone
+Unit 11: Group Milestone
 ===
 
 # MavTrade
@@ -7,6 +7,7 @@ Unit 8: Group Milestone
 1. [Overview](#Overview)
 1. [Product Spec](#Product-Spec)
 1. [Wireframes](#Wireframes)
+1. [Schema] (#Schema)
 
 ## Overview
 ### Description
@@ -25,24 +26,25 @@ MavTrade provides a user-friendly platform where UTA students can trade and sell
 
 **Required Must-have Stories**
 
-* User can register a new account
-* User can login
-* User can create new item post
-* User has profile page to see their posts
-* User can see products posted
-* Item shows availability
-    * Open - Item has no ongoing deal.
-    * Ongoing - Item is currently in the process of being sold.
-    * Closed - Item is no longer available.
+- [x] User can register a new account
+- [x] User can login
+- [ ] User can create new item post
+- [ ] User has profile page to see their posts
+- [ ] User can see products posted
+- [ ] Item shows availability
+    - [ ] Open - Item has no ongoing deal.
+    - [ ] Ongoing - Item is currently in the process of being sold.
+    - [ ] Closed - Item is no longer available.
 
 **Optional Nice-to-have Stories**
 
-* User persistence
-* Items have tags
-* User can sort posts by time posted or price
-* User can search items by keyword or tags
-* Users can follow an item or save potential items
-* Authorize user is a UTA student
+- [ ] User persistence
+- [ ] Items have tags
+- [ ] User can sort posts by time posted or price
+- [ ] User can search items by keyword or tags
+- [ ] Users can follow an item or save potential items
+- [ ] Users can message seller/buyer about product
+- [ ] Authorize user is a UTA student
 
 ### 2. Screen Archetypes
 
@@ -79,3 +81,33 @@ MavTrade provides a user-friendly platform where UTA students can trade and sell
 <img src="Wireframe.png" width=800><br>
 
 https://www.figma.com/proto/2DwZmrxeP11xzKBXq8clXZ/MavTrade-Wireframes?node-id=1%3A3&scaling=scale-down&page-id=0%3A1
+
+## Schema
+### Models
+#### Post
+| Property | Type | Description |
+| --- | --- | ---|
+| objectId | String | unique id for the user post (default field) |
+| createdAt | Date | date when post is created (default field) |
+| updatedAt | Date | date when post is last updated (default field) |
+| user | Pointer to User | post author |
+| title | String | post title by author|
+| image | File | image of item by author |
+| description | String | post description by author |
+| price | Number | item price by author |
+
+### Network Requests
+- Login screen
+   - (Update/PUT) Create a new user object
+- Home screen
+   - (Read/GET) Query all posts sorted by most recent
+- Create post screen
+   - (Create/POST) Create a new post object
+- Post Detail Screen
+   - (Delete) Delete post object created by logged in user
+- Profile screen
+   - (Read/GET) Query all posts where user is author
+   - (Read/GET) Query logged in user object
+- Settings screen
+   - (Update/PUT) Update user profile image
+   - (Delete) Delete logged in user object
