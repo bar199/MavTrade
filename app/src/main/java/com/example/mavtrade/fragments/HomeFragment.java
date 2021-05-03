@@ -1,10 +1,13 @@
 package com.example.mavtrade.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,9 +17,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.mavtrade.Post;
 import com.example.mavtrade.PostsAdapter;
+import com.example.mavtrade.ItemClickSupport;
 import com.example.mavtrade.R;
 import com.parse.ParseQuery;
 
@@ -64,6 +69,21 @@ public class HomeFragment extends Fragment {
         rvPosts.setAdapter(adapter);
         // 4. Set the layout manager on the recycler view
         rvPosts.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+        // Leveraging ItemClickSupport decorator to handle clicks on items in our recyclerView
+        ItemClickSupport.addTo(rvPosts).setOnItemClickListener(
+                new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Post post = allPosts.get(position);
+                        Fragment fragment = new DetailsFragment(post.getObjectId());
+
+                        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.flContainer, fragment)
+                                            .addToBackStack("Open Detail Fragment").commit();
+                    }
+                }
+        );
 
         queryPosts();
     }

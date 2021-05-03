@@ -11,12 +11,17 @@ import java.util.Date;
 @ParseClassName("Post")
 public class Post extends ParseObject {
 
+    public static final String KEY_ID = "objectId";
     public static final String KEY_USER = "user";
     public static final String KEY_TITLE = "title";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_PRICE = "price";
     public static final String KEY_CREATED_AT = "createdAt";
+
+    public String getObjectId() {
+        return getString(KEY_ID);
+    }
 
     public ParseUser getUser() {
         return getParseUser(KEY_USER);

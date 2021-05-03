@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.mavtrade.fragments.DetailsFragment;
 import com.example.mavtrade.fragments.FollowingFragment;
 import com.example.mavtrade.fragments.HomeFragment;
 import com.example.mavtrade.fragments.InboxFragment;
@@ -68,5 +69,7 @@ public class MainActivity extends AppCompatActivity {
         });
         //Set default selection
         bottomNavigationView.setSelectedItemId(R.id.action_home);
+
+
     }
 }
