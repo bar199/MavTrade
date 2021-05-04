@@ -7,17 +7,8 @@ import com.parse.ParseFile;
 
 @ParseClassName("User")
 public class User extends ParseObject {
-    public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_IMAGE = "image";
-
-    public String getObjectId() {
-        return getString(KEY_OBJECT_ID);
-    }
-
-    public void setObjectId(String objectId) {
-        put(KEY_OBJECT_ID, objectId);
-    }
 
     public String getUsername() {
         return getString(KEY_USERNAME);

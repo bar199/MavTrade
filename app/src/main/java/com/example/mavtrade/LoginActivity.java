@@ -58,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
 
         ParseUser.logInInBackground(username, password, (user, e) -> {
             if (e != null) {
-                // TODO: better error handling
                 Log.e(TAG, "Issue with login", e);
                 displayToast("Issue with login!");
                 return;

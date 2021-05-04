@@ -23,7 +23,11 @@ import com.example.mavtrade.Post;
 import com.example.mavtrade.PostsAdapter;
 import com.example.mavtrade.ItemClickSupport;
 import com.example.mavtrade.R;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,22 +74,21 @@ public class HomeFragment extends Fragment {
         // 4. Set the layout manager on the recycler view
         rvPosts.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
+        queryPosts();
+
         // Leveraging ItemClickSupport decorator to handle clicks on items in our recyclerView
         ItemClickSupport.addTo(rvPosts).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        Post post = allPosts.get(position);
-                        Fragment fragment = new DetailsFragment(post.getObjectId());
+                (recyclerView, position, v) -> {
+                    Post post = allPosts.get(position);
 
-                        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.flContainer, fragment)
-                                            .addToBackStack("Open Detail Fragment").commit();
-                    }
+                    Fragment fragment = null;
+                    fragment = new DetailsFragment(post.getObjectId());
+
+                    FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.flContainer, fragment)
+                                        .addToBackStack("Open Detail Fragment").commit();
                 }
         );
-
-        queryPosts();
     }
 
     protected void queryPosts() {
@@ -94,14 +97,15 @@ public class HomeFragment extends Fragment {
         query.setLimit(20);
         query.addDescendingOrder(Post.KEY_CREATED_AT);
 
-        query.findInBackground((posts, e) -> {
+        query.findInBackground((List<Post> posts, ParseException e) -> {
             if (e != null) {
                 Log.e(TAG, "Issue with getting posts", e);
                 return;
             }
 
+            String username = "";
             for (Post post : posts) {
-                Log.i(TAG, "Post: " + post.getTitle() + ", username: " + post.getUser().getUsername());
+                Log.i(TAG, "ObjectId: " + post.getObjectId() + ", Post: " + post.getTitle() + ", username: " + post.getUser().getUsername());
             }
 
             adapter.clear();
