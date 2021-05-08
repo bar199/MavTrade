@@ -76,7 +76,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public void bind(Post post) {
             objectId = post.getObjectId();
             tvTitle.setText(post.getTitle());
-            Log.i(TAG, "Post: " + tvTitle);
+            Log.i(TAG, "Post: " + post.getTitle());
 
             ParseFile image = post.getImage();
             if (image != null) {

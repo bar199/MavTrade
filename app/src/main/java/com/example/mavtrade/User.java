@@ -17,12 +17,4 @@ public class User extends ParseObject {
     public void setUsername(String username) {
         put(KEY_USERNAME, username);
     }
-
-    public ParseFile getImage() {
-        return getParseFile(KEY_IMAGE);
-    }
-
-    public void setImage(ParseFile parseFile) {
-        put(KEY_IMAGE, parseFile);
-    }
 }

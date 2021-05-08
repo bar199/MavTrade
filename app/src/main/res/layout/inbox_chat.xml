@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ivInboxUser"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/image_circle"
+        android:cropToPadding="true"
+        android:padding="2dp"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/ivInboxPost"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/ivInboxUser"
+        android:layout_marginStart="-30dp"
+        android:layout_marginTop="-30dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toEndOf="@+id/ivInboxUser"
+        android:background="@drawable/image_circle"
+        android:cropToPadding="true"
+        android:padding="2dp"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/tvInboxPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ivInboxUser"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/ivInboxPost"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Psychology Textbook" />
+
+    <TextView
+        android:id="@+id/tvInboxUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInboxPost"
+        android:layout_alignStart="@id/tvInboxPost"
+        android:layout_marginTop="5dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/mav_orange"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="Audrey Lambert" />
+
+    <TextView
+        android:id="@+id/tvInboxTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/tvInboxUser"
+        android:layout_alignBottom="@id/tvInboxUser"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@+id/tvInboxUser"
+        android:gravity="center_vertical|end"
+        android:textColor="@color/secondary_text"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="08/05/21 5:38 am" />
+
+    <TextView
+        android:id="@+id/tvInboxMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvInboxUser"
+        android:layout_alignStart="@id/tvInboxUser"
+        android:ellipsize="end"
+        android:lines="2"
+        android:textColor="@color/secondary_text"
+        android:textSize="12sp"
+        tools:text="This is the latest message." />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/tvInboxMessage"
+        android:layout_marginTop="1dp"
+        android:background="@color/text_background_black" />
+
+</RelativeLayout>

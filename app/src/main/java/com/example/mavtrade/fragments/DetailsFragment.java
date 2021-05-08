@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Html;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,6 +37,7 @@ public class DetailsFragment extends Fragment {
     public static final String DATE_FORMAT_1 = "dd-MMM-yy";
     public static final String DATE_FORMAT_2 = "h:mm a";
 
+    private Post post;
     private String objectId;
     private TextView tvDetailsTitle;
     private TextView tvPrice;
@@ -46,9 +49,7 @@ public class DetailsFragment extends Fragment {
     private Button btnMessage;
 
 
-    public DetailsFragment(String objectId) {
-        this.objectId = objectId;
-    }
+    public DetailsFragment(String objectId) { this.objectId = objectId; }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +72,18 @@ public class DetailsFragment extends Fragment {
         btnMessage = getView().findViewById(R.id.btnMessage);
 
         queryPost(objectId);
+
+        btnMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = null;
+                fragment = new ChatFragment(post, ParseUser.getCurrentUser(), post.getUser());
+
+                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.flContainer, fragment)
+                        .addToBackStack("Open Chat Fragment from Inbox").commit();
+            }
+        });
     }
 
     protected void queryPost(String objectId) {
@@ -78,17 +91,18 @@ public class DetailsFragment extends Fragment {
         query.include(Post.KEY_USER);
 
         query.getInBackground(objectId, new GetCallback<Post>() {
-            public void done(Post post, ParseException e) {
+            public void done(Post object, ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Issue with getting post with objectId " + objectId, e);
                     return;
                 }
 
-                tvDetailsTitle.setText(post.getTitle());
+                post = object;
+                tvDetailsTitle.setText(object.getTitle());
 
                 // Format price
-                int dollars = (int) post.getPrice() / 100;
-                int cents = (int) post.getPrice() % 100;
+                int dollars = (int) object.getPrice() / 100;
+                int cents = (int) object.getPrice() % 100;
 
                 if (cents < 10) {
                     tvPrice.setText("$" + dollars + ".0" + cents);
@@ -96,10 +110,10 @@ public class DetailsFragment extends Fragment {
                     tvPrice.setText("$" + dollars + "." + cents);
                 }
 
-                tvAuthor.setText(post.getUser().getUsername());
-                tvDate.setText(Html.fromHtml(getFormattedDate(post)));
+                tvAuthor.setText(object.getUser().getUsername());
+                tvDate.setText(Html.fromHtml(getFormattedDate(object)));
 
-                ParseFile image = post.getImage();
+                ParseFile image = object.getImage();
                 if (image != null) {
                     try {
                         Glide.with(requireContext()).load(image.getUrl()).into(ivDetailsImage);
@@ -108,13 +122,12 @@ public class DetailsFragment extends Fragment {
                     }
                 }
 
-                tvDetailsDescription.setText(post.getDescription());
+                tvDetailsDescription.setText(object.getDescription());
             }
         });
     }
 
     private String getFormattedDate(Post post) {
-        String date;
 
         Date now = Calendar.getInstance().getTime();
         Date postDate = post.getCreatedAt();

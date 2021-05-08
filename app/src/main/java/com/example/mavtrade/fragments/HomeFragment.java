@@ -1,15 +1,12 @@
 package com.example.mavtrade.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -17,17 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.mavtrade.Post;
 import com.example.mavtrade.PostsAdapter;
 import com.example.mavtrade.ItemClickSupport;
 import com.example.mavtrade.R;
-import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +49,7 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvPosts = view.findViewById(R.id.rvPosts);
-        swipeContainer = view.findViewById(R.id.swipeContainer);
+        swipeContainer = view.findViewById(R.id.scPosts);
 
         swipeContainer.setOnRefreshListener(() -> {
             Log.i(TAG, "Fetching new data!");
@@ -77,18 +70,16 @@ public class HomeFragment extends Fragment {
         queryPosts();
 
         // Leveraging ItemClickSupport decorator to handle clicks on items in our recyclerView
-        ItemClickSupport.addTo(rvPosts).setOnItemClickListener(
-                (recyclerView, position, v) -> {
-                    Post post = allPosts.get(position);
+        ItemClickSupport.addTo(rvPosts).setOnItemClickListener((recyclerView, position, v) -> {
+            Post post = allPosts.get(position);
 
-                    Fragment fragment = null;
-                    fragment = new DetailsFragment(post.getObjectId());
+            Fragment fragment = null;
+            fragment = new DetailsFragment(post.getObjectId());
 
-                    FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.flContainer, fragment)
-                                        .addToBackStack("Open Detail Fragment").commit();
-                }
-        );
+            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.flContainer, fragment)
+                                .addToBackStack("Open Detail Fragment").commit();
+        });
     }
 
     protected void queryPosts() {
@@ -103,8 +94,8 @@ public class HomeFragment extends Fragment {
                 return;
             }
 
-            String username = "";
             for (Post post : posts) {
+                String username = post.getUser().getUsername();
                 Log.i(TAG, "ObjectId: " + post.getObjectId() + ", Post: " + post.getTitle() + ", username: " + post.getUser().getUsername());
             }
 

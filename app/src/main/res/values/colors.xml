@@ -20,4 +20,6 @@
 
     <color name="mav_blue">#0064B3</color>
     <color name="mav_orange">#F68121</color>
+
+    <color name="text_background_black">#3B3B3D</color>
 </resources>

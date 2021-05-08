@@ -113,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
         text.setText(message);
         // Construct the toast, set the view and display
         Toast toast = new Toast(getApplicationContext());
+        toast.setView(layout);
         toast.show();
     }
 }
