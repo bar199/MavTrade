@@ -6,10 +6,22 @@
     tools:context=".fragments.FollowingFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFollowing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
+        android:id="@+id/noFollowingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Following fragment"
-        android:textColor="@color/white" />
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="@string/no_posts"
+        android:textAllCaps="true"
+        android:textColor="@color/text_background_black"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </FrameLayout>

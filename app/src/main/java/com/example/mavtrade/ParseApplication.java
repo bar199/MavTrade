@@ -18,6 +18,7 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(Chat.class);
         ParseObject.registerSubclass(Inbox.class);
         ParseObject.registerSubclass(UserInfo.class);
+        ParseObject.registerSubclass(Following.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("p4XW35eqRzZfkslkuE5xR9eJZkHx6gJvT4Xz1JU3")
                 .clientKey("anqec9XnlfgOgFmaBN9IjP7L8grJBqiIYqqavYvU")

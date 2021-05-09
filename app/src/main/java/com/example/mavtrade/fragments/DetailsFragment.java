@@ -13,22 +13,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.example.mavtrade.Following;
 import com.example.mavtrade.Post;
 import com.example.mavtrade.R;
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 public class DetailsFragment extends Fragment {
@@ -39,6 +45,7 @@ public class DetailsFragment extends Fragment {
 
     private Post post;
     private String objectId;
+    private Following postFollowing;
     private TextView tvDetailsTitle;
     private TextView tvPrice;
     private TextView tvAuthor;
@@ -48,8 +55,9 @@ public class DetailsFragment extends Fragment {
     private ToggleButton tbtnFollow;
     private Button btnMessage;
 
-
-    public DetailsFragment(String objectId) { this.objectId = objectId; }
+    public DetailsFragment(String objectId) {
+        this.objectId = objectId;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,8 +79,22 @@ public class DetailsFragment extends Fragment {
         tbtnFollow = getView().findViewById(R.id.tbtnFollow);
         btnMessage = getView().findViewById(R.id.btnMessage);
 
-        queryPost(objectId);
+        queryPost();
 
+        // Set FOLLOW/UNFOLLOW button functionality
+        tbtnFollow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    saveFollowing();
+                } else {
+                    deleteFollowing();
+                }
+            }
+        });
+
+
+        // Set MESSAGE button functionality
         btnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,43 +108,119 @@ public class DetailsFragment extends Fragment {
         });
     }
 
-    protected void queryPost(String objectId) {
+    protected void queryPost() {
+        ParseQuery<Post> query = ParseQuery.getQuery("Post");
+        query.include(Post.KEY_USER);
+
+        query.getInBackground(objectId, (object, e) -> {
+            if (e != null) {
+                Log.e(TAG, "Issue with getting post with objectId " + objectId, e);
+                return;
+            }
+
+            post = object;
+            tvDetailsTitle.setText(object.getTitle());
+
+            // Format price
+            int dollars = (int) object.getPrice() / 100;
+            int cents = (int) object.getPrice() % 100;
+
+            if (cents < 10) {
+                tvPrice.setText("$" + dollars + ".0" + cents);
+            } else {
+                tvPrice.setText("$" + dollars + "." + cents);
+            }
+
+            tvAuthor.setText(object.getUser().getUsername());
+            tvDate.setText(Html.fromHtml(getFormattedDate(object)));
+
+            ParseFile image = object.getImage();
+            if (image != null) {
+                try {
+                    Glide.with(requireContext()).load(image.getUrl()).into(ivDetailsImage);
+                } catch (Exception ex) {
+                    Log.e(TAG, "Issue with loading post image: ", ex);
+                }
+            }
+
+            tvDetailsDescription.setText(object.getDescription());
+            setToggleFollow();
+        });
+    }
+
+    protected void setToggleFollow() {
+        ParseQuery<Following> query = ParseQuery.getQuery(Following.class);
+        query.include(Following.KEY_USER);
+        query.include(Following.KEY_POST);
+
+        query.whereEqualTo(Following.KEY_USER, ParseUser.getCurrentUser());
+        query.whereEqualTo(Following.KEY_POST, post);
+
+        query.findInBackground((following, e) -> {
+            if (following.size() == 0) {
+                tbtnFollow.setChecked(false);
+
+            } else if (following.size() == 1) { // User already following post
+                tbtnFollow.setChecked(true);
+            }
+            else {
+                Log.e(TAG, "setToggleFollow couldn't initialize the toggle button", e);
+            }
+        });
+    }
+
+    protected void saveFollowing() {
         ParseQuery<Post> query = ParseQuery.getQuery("Post");
         query.include(Post.KEY_USER);
 
         query.getInBackground(objectId, new GetCallback<Post>() {
+            @Override
             public void done(Post object, ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting post with objectId " + objectId, e);
-                    return;
+                    Log.e(TAG, "queryFollowing couldn't get Following post");
                 }
 
-                post = object;
-                tvDetailsTitle.setText(object.getTitle());
+                postFollowing = new Following();
+                postFollowing.setPost(object);
+                postFollowing.setUser(ParseUser.getCurrentUser());
 
-                // Format price
-                int dollars = (int) object.getPrice() / 100;
-                int cents = (int) object.getPrice() % 100;
+                postFollowing.saveInBackground(ex -> {
 
-                if (cents < 10) {
-                    tvPrice.setText("$" + dollars + ".0" + cents);
-                } else {
-                    tvPrice.setText("$" + dollars + "." + cents);
-                }
-
-                tvAuthor.setText(object.getUser().getUsername());
-                tvDate.setText(Html.fromHtml(getFormattedDate(object)));
-
-                ParseFile image = object.getImage();
-                if (image != null) {
-                    try {
-                        Glide.with(requireContext()).load(image.getUrl()).into(ivDetailsImage);
-                    } catch (Exception ex) {
-                        Log.e(TAG, "Issue with loading post image: ", ex);
+                    if (ex != null) {
+                        Log.e(TAG, "Function saveFollowing could not save following", ex);
+                    } else {
+                        Log.i(TAG, "Following object successfully saved!");
                     }
-                }
+                });
+            }
+        });
+    }
 
-                tvDetailsDescription.setText(object.getDescription());
+    protected void deleteFollowing() {
+        ParseQuery<Following> query = ParseQuery.getQuery(Following.class);
+        query.include(Following.KEY_USER);
+        query.include(Following.KEY_POST);
+
+        query.whereEqualTo(Following.KEY_USER, ParseUser.getCurrentUser());
+        query.whereEqualTo(Following.KEY_POST, post);
+
+        query.findInBackground((following, e) -> {
+            if (following.size() == 1) {
+                // Delete the following
+                postFollowing = following.get(0);
+                postFollowing.deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException ex) {
+                        if (ex != null) {
+                            Log.e(TAG, "Issue with deleting Following object: ", ex);
+                        } else {
+                            Log.i(TAG, "Following successfully deleted!");
+                        }
+                    }
+                });
+
+            } else {
+                Log.e(TAG, "Issue with searching Following object: ", e);
             }
         });
     }

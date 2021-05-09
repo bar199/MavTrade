@@ -6,8 +6,6 @@ import com.parse.ParseObject;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
-import static com.example.mavtrade.Post.KEY_USER;
-
 @ParseClassName("Inbox")
 public class Inbox extends ParseObject {
     public static final String KEY_POST = "post";

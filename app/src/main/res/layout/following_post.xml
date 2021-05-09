@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ivFollowingPost"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/tvFollowingTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ivFollowingPost"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/ivFollowingPost"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="2021 Guitar" />
+
+    <TextView
+        android:id="@+id/tvFollowingUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvFollowingTitle"
+        android:layout_alignLeft="@id/tvFollowingTitle"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        tools:text="Created by Sydney" />
+
+    <TextView
+        android:id="@+id/tvFollowingDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvFollowingUser"
+        android:layout_alignLeft="@id/tvFollowingUser"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:ellipsize="end"
+        android:lines="3"
+        android:textColor="@color/secondary_text"
+        android:textSize="12sp"
+        tools:text="Selling something for now" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/ivFollowingPost"
+        android:background="@color/text_background_black" />
+</RelativeLayout>
