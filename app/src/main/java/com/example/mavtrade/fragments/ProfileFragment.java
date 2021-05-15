@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+import com.example.mavtrade.ItemClickSupport;
 import com.example.mavtrade.Post;
 import com.example.mavtrade.ProfileAdapter;
 import com.example.mavtrade.R;
@@ -36,6 +38,7 @@ public class ProfileFragment extends Fragment {
 
     public static final String TAG = "ProfileFragment";
     private RecyclerView rvProfile;
+    private TextView tvEmptyProfile;
     private ProfileAdapter adapter;
     private List<Post> allPosts;
 
@@ -60,6 +63,7 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvProfile = view.findViewById(R.id.rvProfile);
+        tvEmptyProfile = view.findViewById(R.id.tvEmptyProfile);
         ivProfile = view.findViewById(R.id.ivProfile);
         tvProfile = view.findViewById(R.id.tvProfile);
         tvNumPosts = view.findViewById(R.id.tvNumPosts);
@@ -92,6 +96,27 @@ public class ProfileFragment extends Fragment {
                         .addToBackStack("Open Compose Fragment").commit();
             }
         });
+
+        // Leveraging ItemClickSupport decorator to handle clicks on items in our recyclerView
+        ItemClickSupport.addTo(rvProfile).setOnItemClickListener((recyclerView, position, v) -> {
+            Post post = allPosts.get(position);
+
+            Fragment fragment = null;
+            fragment = new DetailsFragment(post.getObjectId());
+
+            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.flContainer, fragment)
+                    .addToBackStack("Open Detail Fragment").commit();
+        });
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if (!hidden) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void queryUserImage() {
@@ -129,6 +154,12 @@ public class ProfileFragment extends Fragment {
             if (e != null) {
                 Log.e(TAG, "Issue with getting posts", e);
                 return;
+            }
+
+            if (posts.size() == 0) {
+                tvEmptyProfile.setVisibility(View.VISIBLE);
+            } else {
+                tvEmptyProfile.setVisibility(View.GONE);
             }
 
             for (Post post : posts) {

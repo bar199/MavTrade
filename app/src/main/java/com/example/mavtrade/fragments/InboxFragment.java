@@ -168,13 +168,13 @@ public class InboxFragment extends Fragment {
                         + conversation.getQuerier().getUsername());
             }
 
-            if (conversations.isEmpty()) {
-                rvChats.setVisibility(View.GONE);
+            if (conversations.size() == 0) {
                 tvEmptyView.setVisibility(View.VISIBLE);
+                rvChats.setVisibility(View.GONE);
             }
             else {
-                rvChats.setVisibility(View.VISIBLE);
                 tvEmptyView.setVisibility(View.GONE);
+                rvChats.setVisibility(View.VISIBLE);
             }
 
             adapter.clear();

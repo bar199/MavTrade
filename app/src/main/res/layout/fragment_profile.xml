@@ -69,6 +69,22 @@
         android:layout_below="@+id/rlProfile"
         android:layout_marginBottom="5dp" />
 
+    <TextView
+        android:id="@+id/tvEmptyProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/rvProfile"
+        android:layout_alignBottom="@id/rvProfile"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:text="@string/no_posts"
+        android:textAllCaps="true"
+        android:textColor="@color/text_background_black"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <Button
         android:id="@+id/btnCompose"
         android:layout_width="match_parent"

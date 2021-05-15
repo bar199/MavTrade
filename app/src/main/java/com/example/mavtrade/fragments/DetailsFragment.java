@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.text.Html;
@@ -16,11 +17,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 import com.example.mavtrade.Following;
 import com.example.mavtrade.Post;
+import com.example.mavtrade.ProfileAdapter;
 import com.example.mavtrade.R;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -29,7 +32,6 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,7 +39,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class DetailsFragment extends Fragment {
+import static com.parse.Parse.getApplicationContext;
+
+public class DetailsFragment extends Fragment implements DeleteDialogFragment.DeleteDialogListener {
 
     public static final String TAG = "DetailsFragment";
     public static final String DATE_FORMAT_1 = "dd-MMM-yy";
@@ -54,6 +58,8 @@ public class DetailsFragment extends Fragment {
     private ImageView ivDetailsImage;
     private ToggleButton tbtnFollow;
     private Button btnMessage;
+    private Button btnDelete;
+    private Boolean tbtnInitialization = true;
 
     public DetailsFragment(String objectId) {
         this.objectId = objectId;
@@ -78,6 +84,7 @@ public class DetailsFragment extends Fragment {
         ivDetailsImage = getView().findViewById(R.id.ivDetailsImage);
         tbtnFollow = getView().findViewById(R.id.tbtnFollow);
         btnMessage = getView().findViewById(R.id.btnMessage);
+        btnDelete = getView().findViewById(R.id.btnDelete);
 
         queryPost();
 
@@ -85,10 +92,12 @@ public class DetailsFragment extends Fragment {
         tbtnFollow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    saveFollowing();
-                } else {
-                    deleteFollowing();
+                if (!tbtnInitialization) {
+                    if (isChecked) {
+                        saveFollowing();
+                    } else {
+                        deleteFollowing();
+                    }
                 }
             }
         });
@@ -106,6 +115,22 @@ public class DetailsFragment extends Fragment {
                         .addToBackStack("Open Chat Fragment from Inbox").commit();
             }
         });
+
+        // Set DELETE button functionality
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showDeleteDialog();
+            }
+        });
+    }
+
+    @Override
+    public void onFinishDeleteDialog() {
+        deletePost();
+        displayToast("Post successfully deleted!");
+        getParentFragmentManager().popBackStackImmediate();
     }
 
     protected void queryPost() {
@@ -145,6 +170,15 @@ public class DetailsFragment extends Fragment {
 
             tvDetailsDescription.setText(object.getDescription());
             setToggleFollow();
+
+            // Show DELETE button if current user is the post author. Else display MESSAGE button.
+            if (post.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+                btnMessage.setVisibility(View.GONE);
+                btnDelete.setVisibility(View.VISIBLE);
+            } else {
+                btnMessage.setVisibility(View.VISIBLE);
+                btnDelete.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -157,15 +191,21 @@ public class DetailsFragment extends Fragment {
         query.whereEqualTo(Following.KEY_POST, post);
 
         query.findInBackground((following, e) -> {
-            if (following.size() == 0) {
+            if (following.size() == 0) {    // Display FOLLOW status of toggle button
                 tbtnFollow.setChecked(false);
+                tbtnFollow.setSelected(false);
+                tbtnFollow.setVisibility(View.VISIBLE);
 
-            } else if (following.size() == 1) { // User already following post
+            } else if (following.size() == 1) { // Display UNFOLLOW status of toggle button
                 tbtnFollow.setChecked(true);
+                tbtnFollow.setSelected(true);
+                tbtnFollow.setVisibility(View.VISIBLE);
             }
             else {
                 Log.e(TAG, "setToggleFollow couldn't initialize the toggle button", e);
             }
+
+            tbtnInitialization = false;
         });
     }
 
@@ -242,5 +282,87 @@ public class DetailsFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat.format(date);
+    }
+
+    // Call this method to launch the delete dialog
+    private void showDeleteDialog() {
+        FragmentManager fm = getParentFragmentManager();
+        DeleteDialogFragment deleteDialogFragment = DeleteDialogFragment
+                .newInstance(objectId, "Delete post", "Are you sure you want to delete this post?");
+
+        // SETS the target fragment for use later when sending results
+        deleteDialogFragment.setTargetFragment(DetailsFragment.this, 300);
+        deleteDialogFragment.show(fm, "fragment_delete_post");
+    }
+
+    // Delete Post object
+    private void deletePost() {
+        ParseQuery<Post> postQuery = ParseQuery.getQuery(Post.class);
+
+        postQuery.getInBackground(objectId, new GetCallback<Post>() {
+            @Override
+            public void done(Post post, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue getting post", e);
+                    return;
+                }
+
+                post.deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException ex) {
+                        if (ex != null) {
+                            Log.e(TAG, "Issue deleting post", ex);
+                            return;
+                        }
+                        deletePostFollowings();
+                    }
+                });
+            }
+        });
+    }
+
+    // Delete all followings of the post
+    private void deletePostFollowings() {
+        ParseQuery<Following> followingQuery = ParseQuery.getQuery(Following.class);
+        followingQuery.whereEqualTo("following", objectId);
+
+        followingQuery.findInBackground(new FindCallback<Following>() {
+            @Override
+            public void done(List<Following> followings, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue getting list of post followings", e);
+                    return;
+                }
+
+                for (Following following : followings) {
+                    following.deleteInBackground(new DeleteCallback() {
+                        @Override
+                        public void done(ParseException ex) {
+                            if (ex != null) {
+                                Log.e(TAG, "Issue deleting the post following with objectId:"
+                                        + following.getObjectId(), ex);
+                                return;
+                            }
+
+                            Log.i(TAG, "Successfully deleted post following");
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void displayToast(String message) {
+        // Inflate toast XML layout
+        View layout = getLayoutInflater().inflate(R.layout.toast,
+                (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
+
+        // Fill in the message into the textview
+        TextView text = (TextView) layout.findViewById(R.id.text);
+        text.setText(message);
+
+        // Construct the toast, set the view and display
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

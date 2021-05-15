@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -37,6 +38,7 @@ public class FollowingFragment extends Fragment {
 
     public static final String TAG = "FollowingAdapter";
     protected RecyclerView rvFollowing;
+    protected TextView tvEmptyFollowing;
     protected FollowingAdapter adapter;
     protected List<Following> followedPosts;
 
@@ -56,7 +58,7 @@ public class FollowingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvFollowing = view.findViewById(R.id.rvFollowing);
-
+        tvEmptyFollowing = view.findViewById(R.id.tvEmptyFollowing);
         followedPosts = new ArrayList<>();
         adapter = new FollowingAdapter(getContext(), followedPosts);
         rvFollowing.setAdapter(adapter);
@@ -91,6 +93,12 @@ public class FollowingFragment extends Fragment {
                 if (e != null) {
                     Log.e(TAG, "queryFollowing couldn't get followed posts", e);
                     return;
+                }
+
+                if (followings.size() == 0) {
+                    tvEmptyFollowing.setVisibility(View.VISIBLE);
+                } else {
+                    tvEmptyFollowing.setVisibility(View.GONE);
                 }
 
                 for (Following following : followings) {

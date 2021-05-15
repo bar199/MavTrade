@@ -50,7 +50,7 @@ public class ComposeFragment extends Fragment {
 
     public static final String TAG = "ComposeFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
-    public final static int PICK_PHOTO_CODE = 43;
+    public static final int PICK_PHOTO_CODE = 43;
 
     private EditText etPrice;
     private EditText etTitle;
@@ -91,16 +91,12 @@ public class ComposeFragment extends Fragment {
         btnLoadImage = view.findViewById(R.id.btnLoadImage);
         btnPost = view.findViewById(R.id.btnPost);
 
-        etTitle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        //etTitle.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         etPrice.addTextChangedListener(onTextChangedListener());
 
-        btnCaptureImage.setOnClickListener(v -> {
-            launchCamera();
-        });
+        btnCaptureImage.setOnClickListener(v -> launchCamera());
 
-        btnLoadImage.setOnClickListener(v -> {
-            onPickPhoto();
-        });
+        btnLoadImage.setOnClickListener(v -> onPickPhoto());
 
         btnPost.setOnClickListener(v -> {
             title = etTitle.getText().toString();
@@ -380,6 +376,7 @@ public class ComposeFragment extends Fragment {
             etDescription.setText("");
             ivPostImage.setImageResource(0);
             displayToast("Post successfully saved!");
+            getParentFragmentManager().popBackStackImmediate();
         });
     }
 }
