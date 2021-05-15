@@ -218,6 +218,7 @@ public class SettingsFragment extends Fragment {
                     etSettingsUsername.setError("This field cannot be blank");
 
                 } else {
+                    etSettingsUsername.setError(null);
                     goodUserName = true;
                     String newUsername = s.toString().trim();
                     userNameUpdated = !newUsername.equals(userName);
@@ -246,18 +247,9 @@ public class SettingsFragment extends Fragment {
                     etSettingsEmail.setError("This field cannot be blank");
 
                 } else {
+                    etSettingsEmail.setError(null);
                     String newEmail = s.toString().trim();
                     Boolean isValidEmail = (Patterns.EMAIL_ADDRESS.matcher(newEmail).matches());
-                    /*String EMAIL_PATTERN = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-
-                    if (newEmail.matches(EMAIL_PATTERN)) {
-                        goodEmail = true;
-                        userEmailUpdated = !newEmail.equals(userEmail);
-
-                    } else {
-                        goodEmail = false;
-                        etSettingsEmail.setError("Not a valid email address");
-                    }*/
 
                     if (isValidEmail) {
                         goodEmail = true;

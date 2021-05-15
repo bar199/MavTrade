@@ -126,7 +126,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="15dp"
                 android:layout_weight="1"
-                android:background="@drawable/tbtn_selector"
+                android:background="@drawable/tbtn_follow_selector"
                 android:textColor="@color/white"
                 android:textOff="Follow"
                 android:textOn="Unfollow"

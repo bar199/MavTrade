@@ -4,13 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -19,9 +24,13 @@ public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = "LoginActivity";
     private EditText etUsername;
+    private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
     private Button btnRegister;
+    private ToggleButton tbtnLogin;
+
+    private Boolean goodEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,24 +42,77 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         etUsername = findViewById(R.id.etUsername);
+        etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
+        tbtnLogin = findViewById(R.id.tbtnLogin);
 
         btnLogin.setOnClickListener(v -> {
             Log.i(TAG, "onClick login button");
             String username = etUsername.getText().toString();
             String password = etPassword.getText().toString();
-            loginUser(username, password);
+
+            etUsername.setError(null);
+            etEmail.setError(null);
+
+            if (username != null && password != null) {
+                loginUser(username, password);
+
+            } else {
+                if (username == null) {
+                    etUsername.setError("This field cannot be blank");
+                }
+
+                if (password == null) {
+                    etPassword.setError("This field cannot be blank");
+                }
+            }
         });
 
         btnRegister.setOnClickListener(v -> {
             Log.i(TAG, "onClick signup button");
             String username = etUsername.getText().toString();
+            String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
-            registerUser(username, password);
+
+            etUsername.setError(null);
+            etEmail.setError(null);
+            etPassword.setError(null);
+
+            if (username != null && email != null && password != null) {
+                registerUser(username, email, password);
+
+            } else {
+                if (username == null) {
+                    etUsername.setError("This field cannot be blank");
+                }
+
+                if (email == null) {
+                    etEmail.setError("This field cannot be blank");
+                }
+
+                if (password == null) {
+                    etPassword.setError("This field cannot be blank");
+                }
+            }
         });
 
+        tbtnLogin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    etEmail.setVisibility(View.VISIBLE);
+                    btnLogin.setVisibility(View.GONE);
+                    btnRegister.setVisibility(View.VISIBLE);
+
+                } else {
+                    etEmail.setVisibility(View.GONE);
+                    btnLogin.setVisibility(View.VISIBLE);
+                    btnRegister.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void loginUser(String username, String password) {
@@ -58,8 +120,8 @@ public class LoginActivity extends AppCompatActivity {
 
         ParseUser.logInInBackground(username, password, (user, e) -> {
             if (e != null) {
-                Log.e(TAG, "Issue with login", e);
-                displayToast("Issue with login!");
+                Log.e(TAG, "Invalid username/password", e);
+                displayToast("Invalid username/password");
                 return;
             }
             // Navigate to the main activity if the user has signed in properly
@@ -67,11 +129,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void registerUser(String username, String password) {
+    private void registerUser(String username, String email, String password) {
         Log.i(TAG, "Attempting to signup user " + username);
 
         ParseUser user = new ParseUser();
         user.setUsername(username);
+        user.setEmail(email);
         user.setPassword(password);
 
         user.signUpInBackground(e -> {
@@ -79,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                 switch (e.getCode()) {
                     case ParseException.USERNAME_TAKEN: {
                         Log.e(TAG, "Username already taken", e);
-                        displayToast("Username already taken!");
+                        etUsername.setError("Username already taken");
                         break;
                     }
 
@@ -101,6 +164,37 @@ public class LoginActivity extends AppCompatActivity {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
+    }
+
+    private TextWatcher onEmailChangedListener() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s.toString().trim().isEmpty()) {
+                    etEmail.setError("This field cannot be blank");
+
+                } else {
+                    etEmail.setError(null);
+                    String newEmail = s.toString().trim();
+                    Boolean isValidEmail = (Patterns.EMAIL_ADDRESS.matcher(newEmail).matches());
+
+                    if (isValidEmail) {
+                        goodEmail = true;
+
+                    } else {
+                        goodEmail = false;
+                        etEmail.setError("Not a valid email address");
+                    }
+                }
+            }
+        };
     }
 
     //Custom toast
