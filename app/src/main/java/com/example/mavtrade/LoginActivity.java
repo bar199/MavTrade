@@ -29,8 +29,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private Button btnRegister;
     private ToggleButton tbtnLogin;
+    private TextView tvEmailInfo;
 
-    private Boolean goodEmail;
+    private Boolean goodEmail = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,9 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
         tbtnLogin = findViewById(R.id.tbtnLogin);
+        tvEmailInfo = findViewById(R.id.tvEmailInfo);
+
+        etEmail.addTextChangedListener(onEmailChangedListener());
 
         btnLogin.setOnClickListener(v -> {
             Log.i(TAG, "onClick login button");
@@ -80,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
             etEmail.setError(null);
             etPassword.setError(null);
 
-            if (username != null && email != null && password != null) {
+            if (username != null && password != null && goodEmail) {
                 registerUser(username, email, password);
 
             } else {
@@ -105,11 +109,13 @@ public class LoginActivity extends AppCompatActivity {
                     etEmail.setVisibility(View.VISIBLE);
                     btnLogin.setVisibility(View.GONE);
                     btnRegister.setVisibility(View.VISIBLE);
+                    tvEmailInfo.setVisibility(View.VISIBLE);
 
                 } else {
                     etEmail.setVisibility(View.GONE);
                     btnLogin.setVisibility(View.VISIBLE);
                     btnRegister.setVisibility(View.GONE);
+                    tvEmailInfo.setVisibility(View.GONE);
                 }
             }
         });
@@ -146,6 +152,12 @@ public class LoginActivity extends AppCompatActivity {
                         break;
                     }
 
+                    case ParseException.EMAIL_TAKEN: {
+                        Log.e(TAG, "Already existing account with this email", e);
+                        etEmail.setError("Already existing account with this email");
+                        break;
+                    }
+
                     default: {
                         Log.e(TAG, "Issue with registration", e);
                         displayToast("Issue with registration!");
@@ -178,15 +190,23 @@ public class LoginActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
                 if (s.toString().trim().isEmpty()) {
+                    goodEmail = false;
                     etEmail.setError("This field cannot be blank");
 
                 } else {
                     etEmail.setError(null);
                     String newEmail = s.toString().trim();
+                    String mavEmail = "@mavs.uta.edu";
+
                     Boolean isValidEmail = (Patterns.EMAIL_ADDRESS.matcher(newEmail).matches());
 
                     if (isValidEmail) {
-                        goodEmail = true;
+                        if (newEmail.contains(mavEmail)) {
+                            goodEmail = true;
+                        } else {
+                            goodEmail = false;
+                            etEmail.setError("Email must be a \'@mavs.uta.edu\' email");
+                        }
 
                     } else {
                         goodEmail = false;

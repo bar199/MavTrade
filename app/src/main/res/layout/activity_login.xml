@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|top"
     android:layout_margin="16dp"
-    android:layout_gravity="center"
     android:background="@color/black"
     android:orientation="vertical"
     tools:context=".LoginActivity">
@@ -14,7 +14,7 @@
         android:id="@+id/ivMavTrade"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="200dp"
         android:layout_marginBottom="10dp"
         android:layout_weight="1"
         app:srcCompat="@drawable/logo" />
@@ -98,5 +98,17 @@
         android:textColor="@drawable/tbtn_login_selector"
         android:textOff="Don't have an account? Sign up!"
         android:textOn="Already have an account? Sign in!" />
+
+    <TextView
+        android:id="@+id/tvEmailInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_weight="1"
+        android:text="This app is for UTA students and Alumni. \nEmail must be a '@mavs.uta.edu' email. \nYou can change this email later in Settings."
+        android:textAlignment="center"
+        android:textColor="@color/secondary_text"
+        android:textSize="12sp"
+        android:visibility="gone" />
 
 </LinearLayout>
