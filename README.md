@@ -1,4 +1,4 @@
-Unit 11: Group Milestone
+Unit 14: Presentation
 ===
 
 # MavTrade
@@ -29,23 +29,23 @@ MavTrade provides a user-friendly platform where UTA students can trade and sell
 
 - [x] User can register a new account
 - [x] User can login
-- [ ] User can create new item post
-- [ ] User has profile page to see their posts
-- [ ] User can see products posted
+- [x] User can create new item post
+- [x] User has profile page to see their posts
+- [x] User can see products posted
+- [x] User persistence
+
+**Optional Nice-to-have Stories**
+
+- [ ] Items have tags
+- [ ] User can sort posts by time posted or price
+- [ ] User can search items by keyword or tags
+- [x] Users can follow an item or save potential items
+- [x] Users can message seller/buyer about product
+- [x] Authorize user is a UTA student
 - [ ] Item shows availability
     - [ ] Open - Item has no ongoing deal.
     - [ ] Ongoing - Item is currently in the process of being sold.
     - [ ] Closed - Item is no longer available.
-
-**Optional Nice-to-have Stories**
-
-- [ ] User persistence
-- [ ] Items have tags
-- [ ] User can sort posts by time posted or price
-- [ ] User can search items by keyword or tags
-- [ ] Users can follow an item or save potential items
-- [ ] Users can message seller/buyer about product
-- [ ] Authorize user is a UTA student
 
 ### 2. Screen Archetypes
 
@@ -85,9 +85,39 @@ https://www.figma.com/proto/2DwZmrxeP11xzKBXq8clXZ/MavTrade-Wireframes?node-id=1
 
 ## Schema
 ### Models
+#### Chat
+| Property | Type | Description |
+| --- | --- | --- |
+| objectId | String | unique id for the message (default field) |
+| createdAt | Date | date when message is created (default field) |
+| updatedAt | Date | date when message is last updated (default field) |
+| conversation | Pointer to Inbox | conversation the message belongs to |
+| fromUser | Pointer to User | user who is sending the message |
+| toUser | Pointer to User | user who is receiving the message |
+| body | String | text of the message |
+
+#### Following
+| Property | Type | Description |
+| --- | --- | --- |
+| objectId | String | unique id for the message (default field) |
+| createdAt | Date | date when following is created (default field) |
+| updatedAt | Date | date when following is last updated (default field) |
+| following | Pointer to Post | post the user is following |
+| user | Pointer to User | user following a post |
+
+#### Inbox
+| Property | Type | Description |
+| --- | --- | --- |
+| objectId | String | unique id for the message (default field) |
+| createdAt | Date | date when conversation is created (default field) |
+| updatedAt | Date | date when conversation is last updated (default field) |
+| post | Pointer to Post | post the conversation is about |
+| seller | Pointer to User | author of the post |
+| querier | Pointer to User | user asking about the post |
+
 #### Post
 | Property | Type | Description |
-| --- | --- | ---|
+| --- | --- | --- |
 | objectId | String | unique id for the user post (default field) |
 | createdAt | Date | date when post is created (default field) |
 | updatedAt | Date | date when post is last updated (default field) |
@@ -96,6 +126,16 @@ https://www.figma.com/proto/2DwZmrxeP11xzKBXq8clXZ/MavTrade-Wireframes?node-id=1
 | image | File | image of item by author |
 | description | String | post description by author |
 | price | Number | item price by author |
+
+#### UserInfo
+| Property | Type | Description |
+| --- | --- | --- |
+| objectId | String | unique id for the message (default field) |
+| createdAt | Date | date when message is created (default field) |
+| updatedAt | Date | date when message is last updated (default field) |
+| user | Pointer to User | user with associated picture |
+| profileImage | File | image of the user |
+
 
 ### Network Requests
 - Login screen
@@ -119,3 +159,10 @@ https://www.figma.com/proto/2DwZmrxeP11xzKBXq8clXZ/MavTrade-Wireframes?node-id=1
 <img src='unit11progress.gif' title='Unit 11 Progress' width='' alt='Unit 11 Progress' />
 
 GIF created with [GIPHY](https://giphy.com/).
+
+### Unit 14
+<img src='Debbie MavTrade.gif' title='Walkthrough Part 1' width='' alt='Showing Login, Following, Messaging, and Settings Functionality' />
+
+<img src='Sydney MavTrade.gif' title='Walkthrough Part 2' width='' alt='Showing Messaging, Profile, and Composing Functionality' />
+
+GIFs created with QuickTime and [IMG2GO](https://www.img2go.com/convert-video-to-gif).
