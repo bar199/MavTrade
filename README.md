@@ -8,6 +8,7 @@ Unit 14: Presentation
 1. [Product Spec](#Product-Spec)
 1. [Wireframes](#Wireframes)
 1. [Schema](#Schema)
+1. [Networking](#Networking)
 1. [Progess Gifs](#Progress-Gifs)
 
 ## Overview
@@ -136,22 +137,37 @@ https://www.figma.com/proto/2DwZmrxeP11xzKBXq8clXZ/MavTrade-Wireframes?node-id=1
 | user | Pointer to User | user with associated picture |
 | profileImage | File | image of the user |
 
-
+## Networking
 ### Network Requests
 - Login screen
-   - (Update/PUT) Create a new user object
+    - (Update/PUT) Create a new user object
 - Home screen
-   - (Read/GET) Query all posts sorted by most recent
-- Create post screen
-   - (Create/POST) Create a new post object
-- Post Detail Screen
-   - (Delete) Delete post object created by logged in user
+    - (Read/GET) Query all posts sorted by most recent
+- Following screen
+    - (Read/GET) Query all posts followed by the current user
+- Inbox screen
+    - (Read/GET) Query all posts involving current user sorted by most recent chat object 
+
 - Profile screen
-   - (Read/GET) Query all posts where user is author
-   - (Read/GET) Query logged in user object
+    - (Read/GET) Query all posts where user is author
+    - (Read/GET) Query logged in user object
 - Settings screen
-   - (Update/PUT) Update user profile image
-   - (Delete) Delete logged in user object
+    - (Update/PUT) Update user profile image
+    - (Update/PUT) Update user email
+    - (Update/PUT) Update user password
+    - (Delete) Delete logged in user object
+
+- Compose screen
+    - (Create/POST) Create a new post object
+- Post Detail Screen
+    - (Create/POST) Create a new following object
+    - (Delete) Delete following object created by current user
+    - (Delete) Delete post object created by current user
+- Conversation screen
+    - (Read/GET) Query all messages between current user and post author/querier
+    - (Create/POST) Create a new conversation object
+    - (Create/POST) Create a new chat object
+
 
 ## Progress Gifs
 ### Unit 11
