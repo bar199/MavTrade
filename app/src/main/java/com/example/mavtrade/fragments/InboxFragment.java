@@ -109,6 +109,7 @@ public class InboxFragment extends Fragment {
         mainQuery.include(Inbox.KEY_POST);
         mainQuery.include(Inbox.KEY_SELLER);
         mainQuery.include(Inbox.KEY_QUERIER);
+        mainQuery.addDescendingOrder(Chat.KEY_UPDATED_AT);;
 
         mainQuery.findInBackground((conversations, e) -> {
             if (e != null) {
